@@ -43,13 +43,34 @@ document.querySelector('.scroll-btn').addEventListener('click', (e) => {
 
 // Formulário de contato
 const contatoForm = document.querySelector('.contato-form');
+
 if (contatoForm) {
-    contatoForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Mensagem enviada com sucesso! (Funcionalidade de envio será implementada)');
-        contatoForm.reset();
+  contatoForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(contatoForm);
+
+    const dados = {
+      nome: formData.get("nome"),
+      email: formData.get("email"),
+      mensagem: formData.get("mensagem")
+    };
+
+    const resposta = await fetch("/api/contato", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dados)
     });
+
+    const resultado = await resposta.json();
+
+    alert(resultado.message);
+    contatoForm.reset();
+  });
 }
+
 
 // Animação de scroll para elementos
 const observerOptions = {
